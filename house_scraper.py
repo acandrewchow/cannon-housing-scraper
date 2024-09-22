@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-# Define a function to scrape the data
+# Scrapes the latest house listings on thecannon.ca
 def scrape_listings():
     url = "https://thecannon.ca/housing/"
     response = requests.get(url)
@@ -30,22 +30,20 @@ def scrape_listings():
         st.error(f"Failed to retrieve data. Status code: {response.status_code}")
         return None
 
-# Streamlit App UI
 st.title("TheCannon Housing Listings Scraper")
 
 st.write("""
 Scrapes housing listings from [The Cannon](https://thecannon.ca/housing/) and displays them.
 """)
 
-# Add a button for the user to scrape the listings
 if st.button('Scrape Listings'):
     with st.spinner('Scraping the listings...'):
         df = scrape_listings()
         if df is not None:
             st.success('Scraping complete!')
-            st.write(df)  # Display the data frame in the Streamlit app
+            st.write(df)  # Dataframe within Streamlit
 
-            # Provide download link for CSV
+            # CSV Download
             csv = df.to_csv(index=False)
             st.download_button(
                 label="Download listings as CSV",
