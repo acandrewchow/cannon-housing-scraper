@@ -2,6 +2,22 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import sqlite3
+
+# Database setup
+DB_NAME = 'listings.db'  # Use your preferred database file name
+
+def insert_listing(title, posted, price, link, description):
+    with sqlite3.connect(DB_NAME) as conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute('''
+                INSERT INTO listings (title, posted, price, link, description)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (title, posted, price, link, description))
+            conn.commit()
+        except sqlite3.IntegrityError:
+            pass  # Duplicate
 
 # Scrapes the latest house listings on thecannon.ca
 def scrape_listings(max_pages=10):
@@ -27,7 +43,10 @@ def scrape_listings(max_pages=10):
                 description = listing.find('div', class_='description')
 
                 cleaned_description = clean_html(str(description)) if description else "No description available"
-                
+
+                # Insert listing into the database
+                insert_listing(title, post_date, price, link, cleaned_description)
+
                 scraped_data.append({
                     'Title': title,
                     'Posted': post_date,
