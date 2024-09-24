@@ -1,6 +1,6 @@
 import sqlite3
 
-# Connect to the SQLite database (it will be created if it doesn't exist)
+# Connect to the SQLite database 
 conn = sqlite3.connect('listings.db')
 
 cursor = conn.cursor()
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS listings (
     title TEXT NOT NULL,
     posted TEXT NOT NULL,
     price TEXT NOT NULL,
-    link TEXT NOT NULL,
+    link TEXT NOT NULL UNIQUE,
     description TEXT
 )
 ''')
@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS subscribers (
 )
 ''')
 
-# Commit changes and close
 conn.commit()
 conn.close()
 
